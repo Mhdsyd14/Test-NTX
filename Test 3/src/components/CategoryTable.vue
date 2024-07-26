@@ -51,7 +51,7 @@
         </thead>
         <tbody>
           <tr v-for="product in categoryGroup" :key="product.id">
-            <td class="py-2 px-4 border">{{ product.category_id }}</td>
+            <td class="py-2 px-4 border">{{ product.subcategory_name }}</td>
             <td class="py-2 px-4 border">{{ product.name }}</td>
             <td class="py-2 px-4 border">
               {{ formatCurrency(product.price) }}
@@ -122,21 +122,17 @@ export default {
       return products.value.map((product) => {
         const category =
           categories.value.find((cat) => cat.id === product.category_id) || {};
-        const subcategory = category.subcategories
-          ? category.subcategories.find(
-              (subcat) => subcat.id === product.subcategory_id
-            )
-          : {};
+        const subcategoryName = category.category
+          ? category.category.name
+          : "Tidak Ada Subcategory";
         return {
           ...product,
           category_name: category.name || "Tidak ada Category",
-          subcategory_name: subcategory
-            ? subcategory.name
-            : "Tidak Ada Subcategory",
+          subcategory_name: subcategoryName,
         };
       });
     });
-    console.info(combinedProducts);
+
     const groupedProducts = computed(() => {
       const groups = {};
       combinedProducts.value.forEach((product) => {
@@ -147,8 +143,6 @@ export default {
       });
       return groups;
     });
-
-    console.info(groupedProducts);
 
     const getTotalQuantity = (products) => {
       return products.reduce(
@@ -183,6 +177,7 @@ export default {
         alert("Category berhasil dihapus!");
         location.reload();
       } catch (error) {
+        alert("Category tidak berhasil dihapus!");
         console.error("Error deleting category:", error);
       }
     };

@@ -76,22 +76,20 @@
 import { ref, onMounted } from "vue";
 import { useProductsStore } from "@/stores/productsStore";
 import { useCategoryStore } from "@/stores/categoryStore";
-import { useRouter } from "vue-router"; // Import useRouter
+import { useRouter } from "vue-router";
 
 export default {
   name: "CreateProduct",
   setup() {
     const productStore = useProductsStore();
     const categoryStore = useCategoryStore();
-    const router = useRouter(); // Initialize router
+    const router = useRouter();
     const form = ref({
       name: "",
-      price: null, // Ganti dari "" ke null
-      quantity: null, // Ganti dari "" ke null
+      price: null,
+      quantity: null,
       category_id: null,
     });
-
-    console.info(form);
 
     const categories = ref([]);
 
@@ -110,8 +108,8 @@ export default {
 
         if (
           !form.value.name ||
-          form.value.price === null || // Ganti dari "" ke null
-          form.value.quantity === null || // Ganti dari "" ke null
+          form.value.price === null ||
+          form.value.quantity === null ||
           !form.value.category_id
         ) {
           throw new Error("Incomplete form data");
@@ -120,8 +118,10 @@ export default {
         const newProduct = await productStore.createProduct(form.value);
         console.log("Product created:", newProduct);
 
-        // Navigate to home page after successful creation
-        router.push("/");
+        // Navigate to home page and refresh it
+        router.push("/").then(() => {
+          window.location.reload();
+        });
       } catch (error) {
         console.error("Error creating product:", error);
         // Handle error (e.g., show error message)
@@ -140,5 +140,5 @@ export default {
 </script>
 
 <style scoped>
-/* Tailwind CSS akan menangani styling */
+/* Tailwind CSS will handle styling */
 </style>
